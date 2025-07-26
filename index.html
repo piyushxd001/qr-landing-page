@@ -9,7 +9,9 @@
       background: #111;
       color: #fff;
       font-family: 'Segoe UI', sans-serif;
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       padding-top: 50px;
     }
     input {
@@ -31,7 +33,9 @@
       margin-top: 20px;
     }
     #qrcode {
-      margin-top: 30px;
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
     }
   </style>
 </head>
@@ -42,7 +46,6 @@
   <input type="url" id="qrData" placeholder="Enter URL (e.g. https://...)"/><br>
   <button onclick="generateQR()">Generate QR</button>
 
-  <div id="preview" style="margin-top: 40px;"></div>
   <div id="qrcode"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
@@ -58,8 +61,10 @@
 
       const finalText = message ? `${message}: ${url}` : url;
 
-      document.getElementById("qrcode").innerHTML = "";
-      new QRCode(document.getElementById("qrcode"), {
+      const qrDiv = document.getElementById("qrcode");
+      qrDiv.innerHTML = ""; // Clear previous QR
+
+      new QRCode(qrDiv, {
         text: finalText,
         width: 200,
         height: 200,
