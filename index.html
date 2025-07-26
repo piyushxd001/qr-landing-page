@@ -1,36 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>QR Link Page</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QR Landing Page</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
       background: #121212;
       color: #fff;
+      font-family: 'Segoe UI', sans-serif;
       text-align: center;
-      padding-top: 100px;
+      padding-top: 50px;
     }
-    a {
-      background: #00ffcc;
-      color: #000;
-      padding: 15px 30px;
-      border-radius: 10px;
-      text-decoration: none;
-      font-size: 24px;
-      font-weight: bold;
-      transition: 0.3s ease;
+    input, select {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px;
+      border-radius: 5px;
+      border: none;
+      outline: none;
     }
-    a:hover {
-      background: #00ccaa;
+    button {
+      padding: 12px 20px;
+      background-color: cyan;
+      color: black;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
+  <h1>🎯 QR Link Generator</h1>
+  <p>Enter button text and destination link:</p>
 
-  <h1>Hey 👋</h1>
-  <p>Tap the button to continue:</p>
-  <a href="https://example.com" target="_blank">Click Me</a>
+  <input id="btnText" type="text" placeholder="Button text (e.g., 'Click Me')" />
+  <input id="url" type="url" placeholder="Destination URL" />
+  <br>
+  <button onclick="generatePage()">Generate Link Page</button>
 
+  <hr style="margin: 40px 0;">
+
+  <div id="preview" class="hidden">
+    <h2 id="previewMsg"></h2>
+    <a id="previewBtn" href="#" target="_blank"><button></button></a>
+  </div>
+
+  <script>
+    function generatePage() {
+      const text = document.getElementById('btnText').value.trim();
+      const url = document.getElementById('url').value.trim();
+
+      if (!text || !url) {
+        alert('Please enter both text and a valid URL!');
+        return;
+      }
+
+      document.getElementById('preview').classList.remove('hidden');
+      document.getElementById('previewMsg').innerText = "Test it here:";
+      document.querySelector('#previewBtn button').innerText = text;
+      document.getElementById('previewBtn').href = url;
+    }
+  </script>
 </body>
 </html>
