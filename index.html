@@ -4,16 +4,41 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>QR Code Generator</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <style>
+    :root {
+      --bg: #111;
+      --text: #fff;
+      --input-bg: #222;
+      --button-bg: cyan;
+      --button-text: #000;
+    }
+
+    body.light-mode {
+      --bg: #f2f2f2;
+      --text: #111;
+      --input-bg: #fff;
+      --button-bg: #222;
+      --button-text: #fff;
+    }
+
     body {
-      background: #111;
-      color: #fff;
+      background: var(--bg);
+      color: var(--text);
       font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      transition: all 0.3s ease;
+    }
+
+    .container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding-top: 50px;
+      justify-content: center;
+      min-height: 100vh;
     }
+
     input {
       padding: 10px;
       margin: 10px;
@@ -21,55 +46,98 @@
       border-radius: 5px;
       border: none;
       width: 250px;
+      background: var(--input-bg);
+      color: var(--text);
     }
+
     button {
       padding: 12px 24px;
-      background-color: cyan;
-      color: black;
+      background-color: var(--button-bg);
+      color: var(--button-text);
       font-size: 18px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
       margin-top: 20px;
     }
+
     #qrcode {
-      margin-top: 40px;
-      display: flex;
-      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .mode-toggle {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      user-select: none;
     }
   </style>
 </head>
 <body>
-  <h1>🔗 QR Code Generator</h1>
+  <div class="mode-toggle" id="mode-toggle" onclick="toggleMode()">🌙</div>
 
-  <input type="text" id="btnText" placeholder="Message to show (e.g. 'Click this')"/><br>
-  <input type="url" id="qrData" placeholder="Enter URL (e.g. https://...)"/><br>
-  <button onclick="generateQR()">Generate QR</button>
+  <div class="container">
+    <h1>🔗 QR Code Generator</h1>
 
-  <div id="qrcode"></div>
+    <input type="text" id="btnText" placeholder="Button Text (optional)" /><br>
+    <input type="url" id="qrData" placeholder="Enter URL or message" /><br>
+    <button onclick="generateQR()">Generate QR</button>
 
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <div id="qrcode"></div>
+  </div>
+
   <script>
-    function generateQR() {
-      const url = document.getElementById("qrData").value.trim();
-      const message = document.getElementById("btnText").value.trim();
+    // Cookie helpers
+    function setCookie(name, value, days) {
+      const expires = new Date(Date.now() + days * 864e5).toUTCString();
+      document.cookie = name + "=" + encodeURIComponent(value) + "; expires=" + expires + "; path=/";
+    }
 
-      if (!url) {
-        alert("Please enter a valid URL.");
+    function getCookie(name) {
+      return document.cookie.split("; ").reduce((r, v) => {
+        const parts = v.split("=");
+        return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+      }, "");
+    }
+
+    // Mode toggle logic
+    function toggleMode() {
+      const body = document.body;
+      const toggle = document.getElementById("mode-toggle");
+
+      body.classList.toggle("light-mode");
+
+      const isLight = body.classList.contains("light-mode");
+      toggle.textContent = isLight ? "☀️" : "🌙";
+      setCookie("mode", isLight ? "light" : "dark", 30);
+    }
+
+    // Load saved mode from cookie
+    window.onload = function () {
+      const savedMode = getCookie("mode");
+      if (savedMode === "light") {
+        document.body.classList.add("light-mode");
+        document.getElementById("mode-toggle").textContent = "☀️";
+      }
+    };
+
+    // QR Generator
+    function generateQR() {
+      const data = document.getElementById("qrData").value.trim();
+      if (!data) {
+        alert("Please enter a URL or message.");
         return;
       }
 
-      const finalText = message ? `${message}: ${url}` : url;
-
-      const qrDiv = document.getElementById("qrcode");
-      qrDiv.innerHTML = ""; // Clear previous QR
-
-      new QRCode(qrDiv, {
-        text: finalText,
+      document.getElementById("qrcode").innerHTML = "";
+      new QRCode(document.getElementById("qrcode"), {
+        text: data,
         width: 200,
         height: 200,
-        colorDark: "#ffffff",
-        colorLight: "#111111",
+        colorDark: getComputedStyle(document.body).getPropertyValue("--text").trim(),
+        colorLight: getComputedStyle(document.body).getPropertyValue("--bg").trim(),
         correctLevel: QRCode.CorrectLevel.H
       });
     }
