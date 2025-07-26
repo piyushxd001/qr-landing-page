@@ -1,69 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>QR Landing Page</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QR Code Generator</title>
   <style>
     body {
-      background: #121212;
+      background: #111;
       color: #fff;
       font-family: 'Segoe UI', sans-serif;
       text-align: center;
       padding-top: 50px;
     }
-    input, select {
+    input {
       padding: 10px;
-      font-size: 16px;
       margin: 10px;
+      font-size: 16px;
       border-radius: 5px;
       border: none;
-      outline: none;
+      width: 250px;
     }
     button {
-      padding: 12px 20px;
+      padding: 12px 24px;
       background-color: cyan;
       color: black;
       font-size: 18px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      margin-top: 20px;
     }
-    .hidden {
-      display: none;
+    #qrcode {
+      margin-top: 30px;
     }
   </style>
 </head>
 <body>
-  <h1>🎯 QR Link Generator</h1>
-  <p>Enter button text and destination link:</p>
+  <h1>🔗 QR Code Generator</h1>
 
-  <input id="btnText" type="text" placeholder="Button text (e.g., 'Click Me')" />
-  <input id="url" type="url" placeholder="Destination URL" />
-  <br>
-  <button onclick="generatePage()">Generate Link Page</button>
+  <input type="text" id="btnText" placeholder="Button Text (optional)" /><br>
+  <input type="url" id="qrData" placeholder="Enter URL or message" /><br>
+  <button onclick="generateQR()">Generate QR</button>
 
-  <hr style="margin: 40px 0;">
+  <div id="preview" style="margin-top: 40px;"></div>
+  <div id="qrcode"></div>
 
-  <div id="preview" class="hidden">
-    <h2 id="previewMsg"></h2>
-    <a id="previewBtn" href="#" target="_blank"><button></button></a>
-  </div>
-
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <script>
-    function generatePage() {
-      const text = document.getElementById('btnText').value.trim();
-      const url = document.getElementById('url').value.trim();
+    function generateQR() {
+      const data = document.getElementById("qrData").value.trim();
+      const label = document.getElementById("btnText").value.trim() || "Visit";
 
-      if (!text || !url) {
-        alert('Please enter both text and a valid URL!');
+      if (!data) {
+        alert("Please enter a URL or message to generate QR code.");
         return;
       }
 
-      document.getElementById('preview').classList.remove('hidden');
-      document.getElementById('previewMsg').innerText = "Test it here:";
-      document.querySelector('#previewBtn button').innerText = text;
-      document.getElementById('previewBtn').href = url;
+      document.getElementById("preview").innerHTML = `<a href="${data}" target="_blank">
+        <button>${label}</button></a>`;
+
+      document.getElementById("qrcode").innerHTML = "";
+      new QRCode(document.getElementById("qrcode"), {
+        text: data,
+        width: 200,
+        height: 200,
+        colorDark: "#ffffff",
+        colorLight: "#111111",
+        correctLevel: QRCode.CorrectLevel.H
+      });
     }
   </script>
 </body>
