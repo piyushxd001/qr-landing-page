@@ -38,8 +38,8 @@
 <body>
   <h1>🔗 QR Code Generator</h1>
 
-  <input type="text" id="btnText" placeholder="Button Text (optional)" /><br>
-  <input type="url" id="qrData" placeholder="Enter URL or message" /><br>
+  <input type="text" id="btnText" placeholder="Message to show (e.g. 'Click this')"/><br>
+  <input type="url" id="qrData" placeholder="Enter URL (e.g. https://...)"/><br>
   <button onclick="generateQR()">Generate QR</button>
 
   <div id="preview" style="margin-top: 40px;"></div>
@@ -48,20 +48,24 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <script>
     function generateQR() {
-      const data = document.getElementById("qrData").value.trim();
-      const label = document.getElementById("btnText").value.trim() || "Visit";
+      const url = document.getElementById("qrData").value.trim();
+      const message = document.getElementById("btnText").value.trim();
 
-      if (!data) {
-        alert("Please enter a URL or message to generate QR code.");
+      if (!url) {
+        alert("Please enter a valid URL.");
         return;
       }
 
-      document.getElementById("preview").innerHTML = `<a href="${data}" target="_blank">
-        <button>${label}</button></a>`;
+      const finalText = message ? `${message}: ${url}` : url;
+
+      document.getElementById("preview").innerHTML = `
+        <a href="${url}" target="_blank">
+          <button>${message || "Open Link"}</button>
+        </a>`;
 
       document.getElementById("qrcode").innerHTML = "";
       new QRCode(document.getElementById("qrcode"), {
-        text: data,
+        text: finalText,
         width: 200,
         height: 200,
         colorDark: "#ffffff",
