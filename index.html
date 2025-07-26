@@ -80,8 +80,6 @@
 
   <div class="container">
     <h1>🔗 QR Code Generator</h1>
-
-    <input type="text" id="btnText" placeholder="Button Text (optional)" /><br>
     <input type="url" id="qrData" placeholder="Enter URL or message" /><br>
     <button onclick="generateQR()">Generate QR</button>
 
@@ -89,7 +87,7 @@
   </div>
 
   <script>
-    // Cookie helpers
+    // Cookie 
     function setCookie(name, value, days) {
       const expires = new Date(Date.now() + days * 864e5).toUTCString();
       document.cookie = name + "=" + encodeURIComponent(value) + "; expires=" + expires + "; path=/";
@@ -102,7 +100,7 @@
       }, "");
     }
 
-    // Mode toggle logic
+    // Mode  logic
     function toggleMode() {
       const body = document.body;
       const toggle = document.getElementById("mode-toggle");
