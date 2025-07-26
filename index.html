@@ -58,11 +58,6 @@
 
       const finalText = message ? `${message}: ${url}` : url;
 
-      document.getElementById("preview").innerHTML = `
-        <a href="${url}" target="_blank">
-          <button>${message || "Open Link"}</button>
-        </a>`;
-
       document.getElementById("qrcode").innerHTML = "";
       new QRCode(document.getElementById("qrcode"), {
         text: finalText,
